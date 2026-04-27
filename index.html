@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portrait Présidentiel HD</title><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><style>
+body{
+margin:0;
+font-family:Arial;
+background:#0b1220;
+color:white;
+text-align:center;
+}
+
+.container{
+max-width:700px;
+margin:20px auto;
+padding:10px;
+background:#111a2e;
+border-radius:12px;
+}
+
+h1{color:gold;font-size:16px;}
+
+.preview{
+margin-top:10px;
+padding:10px;
+background:white;
+color:black;
+cursor:pointer;
+}
+
+.outer-frame{
+padding:10px;
+border:8px solid #c9a000;
+}
+
+.inner-frame{
+padding:8px;
+border:4px solid gold;
+}
+
+.photo-area{
+width:100%;
+height:440px;
+background:#eee;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+position:relative;
+}
+
+.photo-area img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.text-row{
+display:flex;
+justify-content:space-between;
+position:absolute;
+bottom:6px;
+left:10px;
+right:10px;
+font-weight:500;
+font-size:10px;
+color:white;
+background:rgba(0,0,0,0.45);
+padding:4px;
+}
+
+.left,.right{
+width:48%;
+outline:none;
+}
+
+.left{text-align:left;}
+.right{text-align:right;}
+
+.hint{
+position:absolute;
+font-size:10px;
+color:#666;
+}
+
+button{
+margin-top:10px;
+padding:10px 16px;
+border:none;
+border-radius:8px;
+background:gold;
+font-weight:bold;
+cursor:pointer;
+}
+
+</style></head>
+<body><div class="container">
+<h1>Portrait Présidentiel HD</h1><div id="preview" class="preview" onclick="selectImage()">
+  <div class="outer-frame">
+    <div class="inner-frame"><div class="photo-area" id="photoArea">
+    <span class="hint">Toucher pour ajouter une photo</span>
+
+    <div class="text-row">
+      <div class="left" contenteditable="true">H.E Babala - President of the Islamic Republic of Kalaba</div>
+      <div class="right" contenteditable="true">S.E Babala - Président de la République Islamique de Kalaba</div>
+    </div>
+
+  </div>
+
+</div>
+
+  </div>
+</div><button onclick="accessDownload()">Télécharger PDF (code 233)</button>
+
+<input type="file" id="imageUpload" style="display:none"></div><script>
+let imgData = "";
+
+function selectImage(){
+ document.getElementById('imageUpload').click();
+}
+
+document.getElementById('imageUpload').addEventListener('change', function(e){
+ const reader = new FileReader();
+ reader.onload = function(){
+  imgData = reader.result;
+  renderImage();
+ }
+ reader.readAsDataURL(e.target.files[0]);
+});
+
+function renderImage(){
+ const photoArea = document.getElementById('photoArea');
+
+ const left = document.querySelector('.left').innerText;
+ const right = document.querySelector('.right').innerText;
+
+ if(imgData){
+  photoArea.innerHTML = `
+  <img src="${imgData}">
+  <div class="text-row">
+    <div class="left" contenteditable="true">${left}</div>
+    <div class="right" contenteditable="true">${right}</div>
+  </div>`;
+ }
+}
+
+function accessDownload(){
+ const code = prompt("Entrez le code d'accès :");
+ if(code === "233"){
+  downloadPDF(2);
+ } else {
+  alert("Code incorrect");
+ }
+}
+
+function downloadPDF(scale){
+ const element = document.getElementById("preview");
+
+ html2canvas(element,{scale:scale}).then(canvas => {
+  const imgData = canvas.toDataURL("image/png");
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+
+  const width = 210;
+  const height = (canvas.height * width) / canvas.width;
+
+  pdf.addImage(imgData,"PNG",0,10,width,height);
+  pdf.save("portrait_233.pdf");
+ });
+}
+
+</script></body>
+</html>

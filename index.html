@@ -1,82 +1,162 @@
-<!DOCTYPE html><html lang="fr">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portrait Présidentiel HD</title><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><style>
-body{margin:0;font-family:Arial;background:#0b1220;color:white;text-align:center;}
-.container{max-width:700px;margin:20px auto;padding:10px;background:#111a2e;border-radius:12px;}
+<title>Portrait Présidentiel HD</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0b1220;
+color:white;
+text-align:center;
+}
+
+.container{
+max-width:700px;
+margin:20px auto;
+padding:10px;
+background:#111a2e;
+border-radius:12px;
+}
+
 h1{color:gold;font-size:16px;}
-.preview{margin-top:10px;padding:10px;background:white;}
-.outer-frame{padding:10px;border:8px solid #c9a000;}
-.inner-frame{padding:8px;border:4px solid gold;}
+
+.preview{
+margin-top:10px;
+padding:10px;
+background:white;
+}
+
+.outer-frame{
+padding:10px;
+border:8px solid #c9a000;
+}
+
+.inner-frame{
+padding:8px;
+border:4px solid gold;
+}
 
 .photo-area{
-width:100%;height:440px;background:#eee;
-display:flex;align-items:center;justify-content:center;
-overflow:hidden;position:relative;cursor:pointer;
+width:100%;
+height:440px;
+background:#eee;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+position:relative;
+cursor:pointer;
 }
 
-.photo-area img{width:100%;height:100%;object-fit:cover;}
+.photo-area img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
 
 .text-row{
-display:flex;justify-content:space-between;
-position:absolute;bottom:20px;left:10px;right:10px;
-font-size:10px;color:white;
-background:rgba(0,0,0,0.45);padding:4px;
+display:flex;
+justify-content:space-between;
+position:absolute;
+bottom:10px;
+left:10px;
+right:10px;
+font-size:10px;
+color:white;
+background:rgba(0,0,0,0.45);
+padding:4px;
 }
 
-.left,.right{width:48%;outline:none;}
+.left,.right{
+width:48%;
+outline:none;
+}
+
 .left{text-align:left;}
 .right{text-align:right;}
 
-/* SIGNATURE FIXÉE ET BIEN VISIBLE */
-.signature{
+.hint{
 position:absolute;
-bottom:4px;
-left:0;
-width:100%;
-text-align:center;
-font-size:7px;
-color:white;
-background:rgba(0,0,0,0.5);
-padding:2px 0;
+font-size:10px;
+color:#666;
+pointer-events:none;
 }
 
-.hint{position:absolute;font-size:10px;color:#666;pointer-events:none;}
+button{
+margin-top:10px;
+padding:10px 16px;
+border:none;
+border-radius:8px;
+background:gold;
+font-weight:bold;
+cursor:pointer;
+}
 
-button{margin-top:10px;padding:10px 16px;border:none;border-radius:8px;background:gold;font-weight:bold;cursor:pointer;}
-</style></head><body><div class="container">
-<h1>Portrait Présidentiel HD</h1><div id="preview" class="preview">
+/* SIGNATURE HORS CADRE */
+.signature{
+margin-top:12px;
+font-size:8px;
+color:#aaa;
+text-align:center;
+font-style:italic;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>Portrait Présidentiel HD</h1>
+
+<div id="preview" class="preview">
+
   <div class="outer-frame">
-    <div class="inner-frame"><div class="photo-area" id="photoArea">
-    <span class="hint">Toucher pour ajouter une photo</span>
+    <div class="inner-frame">
 
-    <div class="text-row">
-      <div class="left" contenteditable="true">H.E Babala - President of the Islamic Republic of Kalaba</div>
-      <div class="right" contenteditable="true">S.E Babala - Président de la République Islamique de Kalaba</div>
+      <div class="photo-area" id="photoArea">
+        <span class="hint">Toucher pour ajouter une photo</span>
+
+        <div class="text-row">
+          <div class="left" contenteditable="true">H.E Babala - President of the Islamic Republic of Kalaba</div>
+          <div class="right" contenteditable="true">S.E Babala - Président de la République Islamique de Kalaba</div>
+        </div>
+
+      </div>
+
     </div>
-
-    <div class="signature">
-      ETS Lesfacilitateurs Groupe | WhatsApp +237670035609
-    </div>
-
   </div>
 
 </div>
 
-  </div>
-</div><button onclick="accessDownload()">Télécharger PDF (code 233)</button>
+<!-- SIGNATURE HORS CADRE -->
+<div class="signature">
+ETS Lesfacilitateurs Groupe | WhatsApp +237670035609
+</div>
 
-<input type="file" id="imageUpload" accept="image/*" style="display:none"></div><script>
+<button onclick="accessDownload()">Télécharger PDF (code 233)</button>
+
+<input type="file" id="imageUpload" accept="image/*" style="display:none">
+
+</div>
+
+<script>
+
 let imgData = "";
 
-// clic image seulement
-photoArea.addEventListener('click', function(e){
+/* IMPORT IMAGE */
+document.getElementById('photoArea').addEventListener('click', function(e){
  if(e.target.isContentEditable) return;
  document.getElementById('imageUpload').click();
 });
 
-// upload
 document.getElementById('imageUpload').addEventListener('change', function(e){
  const file = e.target.files[0];
  if(!file) return;
@@ -89,6 +169,7 @@ document.getElementById('imageUpload').addEventListener('change', function(e){
  reader.readAsDataURL(file);
 });
 
+/* RENDER IMAGE */
 function renderImage(){
  const photoArea = document.getElementById('photoArea');
 
@@ -100,12 +181,10 @@ function renderImage(){
  <div class="text-row">
    <div class="left" contenteditable="true">${left}</div>
    <div class="right" contenteditable="true">${right}</div>
- </div>
- <div class="signature">
-   ETS Lesfacilitateurs Groupe | WhatsApp +237670035609
  </div>`;
 }
 
+/* ACCESS */
 function accessDownload(){
  const code = prompt("Entrez le code d'accès :");
  if(code === "233"){
@@ -115,11 +194,16 @@ function accessDownload(){
  }
 }
 
-// PDF CENTRÉ PRO
+/* PDF PRO */
 function downloadPDF(scale){
- const element = document.getElementById("preview");
 
- html2canvas(element,{scale:scale,useCORS:true}).then(canvas => {
+ const element = document.body;
+
+ html2canvas(element,{
+  scale:scale,
+  useCORS:true
+ }).then(canvas => {
+
   const imgData = canvas.toDataURL("image/png");
 
   const { jsPDF } = window.jspdf;
@@ -128,12 +212,10 @@ function downloadPDF(scale){
   const pageWidth = 210;
   const pageHeight = 297;
 
-  // marges pro
   const margin = 10;
-  const usableWidth = pageWidth - margin*2;
+  const usableWidth = pageWidth - margin * 2;
 
   const imgHeight = (canvas.height * usableWidth) / canvas.width;
-
   const y = (pageHeight - imgHeight) / 2;
 
   pdf.addImage(imgData, "PNG", margin, y, usableWidth, imgHeight);
@@ -142,5 +224,7 @@ function downloadPDF(scale){
  });
 }
 
-</script></body>
+</script>
+
+</body>
 </html>

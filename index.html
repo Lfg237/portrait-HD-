@@ -197,11 +197,12 @@ function accessDownload(){
 /* PDF PRO */
 function downloadPDF(scale){
 
- const element = document.body;
+ const element = document.getElementById("preview");
 
  html2canvas(element,{
   scale:scale,
-  useCORS:true
+  useCORS:true,
+  backgroundColor:"#ffffff"
  }).then(canvas => {
 
   const imgData = canvas.toDataURL("image/png");
@@ -213,10 +214,14 @@ function downloadPDF(scale){
   const pageHeight = 297;
 
   const margin = 10;
-  const usableWidth = pageWidth - margin * 2;
+  const usableWidth = pageWidth - (margin * 2);
 
   const imgHeight = (canvas.height * usableWidth) / canvas.width;
-  const y = (pageHeight - imgHeight) / 2;
+
+  let y = (pageHeight - imgHeight) / 2;
+
+  // empêche dépassement bas
+  if (imgHeight > pageHeight) y = 0;
 
   pdf.addImage(imgData, "PNG", margin, y, usableWidth, imgHeight);
 

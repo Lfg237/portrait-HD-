@@ -6,7 +6,7 @@
 body{margin:0;font-family:Arial;background:#0b1220;color:white;text-align:center;}
 .container{max-width:700px;margin:20px auto;padding:10px;background:#111a2e;border-radius:12px;}
 h1{color:gold;font-size:16px;}
-.preview{margin-top:10px;padding:10px;background:white;color:black;}
+.preview{margin-top:10px;padding:10px;background:white;}
 .outer-frame{padding:10px;border:8px solid #c9a000;}
 .inner-frame{padding:8px;border:4px solid gold;}
 
@@ -20,8 +20,8 @@ overflow:hidden;position:relative;cursor:pointer;
 
 .text-row{
 display:flex;justify-content:space-between;
-position:absolute;bottom:6px;left:10px;right:10px;
-font-weight:500;font-size:10px;color:white;
+position:absolute;bottom:20px;left:10px;right:10px;
+font-size:10px;color:white;
 background:rgba(0,0,0,0.45);padding:4px;
 }
 
@@ -29,11 +29,23 @@ background:rgba(0,0,0,0.45);padding:4px;
 .left{text-align:left;}
 .right{text-align:right;}
 
+/* SIGNATURE FIXÉE ET BIEN VISIBLE */
+.signature{
+position:absolute;
+bottom:4px;
+left:0;
+width:100%;
+text-align:center;
+font-size:7px;
+color:white;
+background:rgba(0,0,0,0.5);
+padding:2px 0;
+}
+
 .hint{position:absolute;font-size:10px;color:#666;pointer-events:none;}
 
 button{margin-top:10px;padding:10px 16px;border:none;border-radius:8px;background:gold;font-weight:bold;cursor:pointer;}
-</style></head>
-<body><div class="container">
+</style></head><body><div class="container">
 <h1>Portrait Présidentiel HD</h1><div id="preview" class="preview">
   <div class="outer-frame">
     <div class="inner-frame"><div class="photo-area" id="photoArea">
@@ -44,6 +56,10 @@ button{margin-top:10px;padding:10px 16px;border:none;border-radius:8px;backgroun
       <div class="right" contenteditable="true">S.E Babala - Président de la République Islamique de Kalaba</div>
     </div>
 
+    <div class="signature">
+      ETS Lesfacilitateurs Groupe | WhatsApp +237670035609
+    </div>
+
   </div>
 
 </div>
@@ -51,15 +67,16 @@ button{margin-top:10px;padding:10px 16px;border:none;border-radius:8px;backgroun
   </div>
 </div><button onclick="accessDownload()">Télécharger PDF (code 233)</button>
 
-<input type="file" id="imageUpload" accept="image/*"></div><script>
+<input type="file" id="imageUpload" accept="image/*" style="display:none"></div><script>
 let imgData = "";
 
-// IMPORTANT: on attache le clic directement en JS (plus fiable mobile)
-document.getElementById('photoArea').addEventListener('click', function(e){
- if(e.target.isContentEditable) return; // ne pas déclencher si texte
+// clic image seulement
+photoArea.addEventListener('click', function(e){
+ if(e.target.isContentEditable) return;
  document.getElementById('imageUpload').click();
 });
 
+// upload
 document.getElementById('imageUpload').addEventListener('change', function(e){
  const file = e.target.files[0];
  if(!file) return;
@@ -83,6 +100,9 @@ function renderImage(){
  <div class="text-row">
    <div class="left" contenteditable="true">${left}</div>
    <div class="right" contenteditable="true">${right}</div>
+ </div>
+ <div class="signature">
+   ETS Lesfacilitateurs Groupe | WhatsApp +237670035609
  </div>`;
 }
 
@@ -95,10 +115,11 @@ function accessDownload(){
  }
 }
 
+// PDF CENTRÉ PRO
 function downloadPDF(scale){
  const element = document.getElementById("preview");
 
- html2canvas(element,{scale:scale}).then(canvas => {
+ html2canvas(element,{scale:scale,useCORS:true}).then(canvas => {
   const imgData = canvas.toDataURL("image/png");
 
   const { jsPDF } = window.jspdf;
@@ -107,16 +128,15 @@ function downloadPDF(scale){
   const pageWidth = 210;
   const pageHeight = 297;
 
-  const imgWidth = pageWidth;
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  // marges pro
+  const margin = 10;
+  const usableWidth = pageWidth - margin*2;
 
-  if(imgHeight > pageHeight){
-    const ratio = pageHeight / imgHeight;
-    pdf.addImage(imgData, "PNG", 0, 0, imgWidth * ratio, imgHeight * ratio);
-  } else {
-    const marginTop = (pageHeight - imgHeight) / 2;
-    pdf.addImage(imgData, "PNG", 0, marginTop, imgWidth, imgHeight);
-  }
+  const imgHeight = (canvas.height * usableWidth) / canvas.width;
+
+  const y = (pageHeight - imgHeight) / 2;
+
+  pdf.addImage(imgData, "PNG", margin, y, usableWidth, imgHeight);
 
   pdf.save("portrait_233.pdf");
  });

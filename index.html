@@ -26,7 +26,6 @@ margin-top:10px;
 padding:10px;
 background:white;
 color:black;
-cursor:pointer;
 }
 
 .outer-frame{
@@ -48,6 +47,7 @@ align-items:center;
 justify-content:center;
 overflow:hidden;
 position:relative;
+cursor:pointer;
 }
 
 .photo-area img{
@@ -96,14 +96,14 @@ cursor:pointer;
 
 </style></head>
 <body><div class="container">
-<h1>Portrait Présidentiel HD</h1><div id="preview" class="preview" onclick="selectImage()">
+<h1>Portrait Présidentiel HD</h1><div id="preview" class="preview">
   <div class="outer-frame">
-    <div class="inner-frame"><div class="photo-area" id="photoArea">
+    <div class="inner-frame"><div class="photo-area" id="photoArea" onclick="selectImage()">
     <span class="hint">Toucher pour ajouter une photo</span>
 
-    <div class="text-row">
-      <div class="left" contenteditable="true">H.E Babala - President of the Islamic Republic of Kalaba</div>
-      <div class="right" contenteditable="true">S.E Babala - Président de la République Islamique de Kalaba</div>
+    <div class="text-row" onclick="event.stopPropagation()">
+      <div class="left" contenteditable="true" onclick="event.stopPropagation()">H.E Babala - President of the Islamic Republic of Kalaba</div>
+      <div class="right" contenteditable="true" onclick="event.stopPropagation()">S.E Babala - Président de la République Islamique de Kalaba</div>
     </div>
 
   </div>
@@ -138,9 +138,9 @@ function renderImage(){
  if(imgData){
   photoArea.innerHTML = `
   <img src="${imgData}">
-  <div class="text-row">
-    <div class="left" contenteditable="true">${left}</div>
-    <div class="right" contenteditable="true">${right}</div>
+  <div class="text-row" onclick="event.stopPropagation()">
+    <div class="left" contenteditable="true" onclick="event.stopPropagation()">${left}</div>
+    <div class="right" contenteditable="true" onclick="event.stopPropagation()">${right}</div>
   </div>`;
  }
 }
